@@ -1,0 +1,14 @@
+FROM continuumio/miniconda3
+RUN apt-get update \
+    && apt-get -y install python3-pip
+
+RUN useradd -ms /bin/bash condauser
+USER condauser
+# geopandas is fussy if we don't give it a dedicated 
+# env. To activate the env, we need to start a bash 
+# shell.
+RUN conda create -n osmlu-env -c conda-forge geopandas jupyterlab libpysal ipykernel
+SHELL ["bash", "-lc"]
+RUN conda activate osmlu-env
+RUN pip install --upgrade pip
+RUN pip install osm2geojson
